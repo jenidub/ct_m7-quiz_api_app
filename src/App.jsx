@@ -13,7 +13,6 @@ const TRIVIA_CATEGORY_MAP = {
 }
 
 const DEFAULT_API_URL = "https://opentdb.com/api.php?amount=10&type=multiple"
-// const TEST_URL = "https://opentdb.com/api.php?amount=10&category=19&difficulty=easy"
 
 function App() {
   // STATE VARIABLES and METHODS
@@ -38,7 +37,6 @@ function App() {
         ...prevFormData,
         triviaData: triviaDataResults.results,
       }))
-      // console.log("API results: ", triviaDataResults.results);
     } catch (e) {
       console.log("error code: ", e);
     }
@@ -50,7 +48,6 @@ function App() {
         ...prevFormData,
         firstName: e.target.value
       }))
-      // console.log("form Data updated by name: ", formData)
   }
 
   const handleCategory = (e) => {
@@ -58,7 +55,6 @@ function App() {
         ...prevFormData,
         category: e.target.value
       }))
-      // console.log("form Data updated by category: ", formData)
   }
 
   const handleDifficulty = (e) => {
@@ -66,7 +62,6 @@ function App() {
         ...prevFormData,
         difficulty: e.target.value
       }))
-      // console.log("form Data updated by difficulty: ", formData)
   }
 
   // SUBMIT FORM FUNCTIONS
@@ -106,13 +101,14 @@ function App() {
       {/* Form Section */}
       <div>
         <form>
+          {/* // A text box and label for the user's first name */}
           <div>
-            {/* // A text box and label for the user's first name */}
             <label htmlFor="firstName">Welcome! What&apos;s your name? </label>
             <input type="text" id="firstName" placeholder="* Required" onChange={handleNameEntry}></input>
           </div>
+
+          {/* A dropdown and label for the question category - the user must have at least 4 choices that the API supports */}
           <div>
-            {/* A dropdown and label for the question category - the user must have at least 4 choices that the API supports */}
             <label htmlFor="category">What question category would you like to see?</label>
             <select id="category" name="category" onChange={handleCategory}>
               <option value="">Select an option</option>
@@ -123,8 +119,9 @@ function App() {
               <option value="Math">Math</option>
             </select>            
           </div>
+
+          {/* A dropdown and label for the question difficulty - use all three choices the API supports */}
           <div>
-            {/* A dropdown and label for the question difficulty - use all three choices the API supports */}
             <label htmlFor="difficulty">What level of difficulty would you like?</label>
             <select id="difficulty" name="difficulty" onChange={handleDifficulty}>
               <option value="">Select an option</option>
@@ -133,6 +130,7 @@ function App() {
               <option value="hard">Hard</option>
             </select>    
           </div>
+
           {/* // A submit button
             // An error message, stopping the form submit, if any of these inputs aren't filled out or selected. 
             // => They are all required.
@@ -144,6 +142,7 @@ function App() {
         {/* {formData.results && <Results data={formData} />} */}
       </div>
       <div>
+        <hr />
         <footer>
           <p>Created by JeniDub</p>
         </footer>
