@@ -12,8 +12,8 @@ function Results (props) {
                 }
             </div>
             <div>
-                {correct && <h3 style={{color: "green"}}>You got the answer correct! Nice job</h3>}
-                {incorrect && <h3 style={{color: "red"}}>Sorry you got the answer wrong! The correct answer is {correctAnswer}.</h3>}
+                {correct && <h3 className="correct-text">You got the answer correct! Nice job</h3>}
+                {incorrect && <h3 className="incorrect-text">Sorry you got the answer wrong! The correct answer is {correctAnswer}.</h3>}
             </div>
         </div>
     )

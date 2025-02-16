@@ -26,7 +26,7 @@ function QuestionForm ({ data, setFormDefaultState, defaultFormState }) {
 
         let quizQuestion = convertEntities(currentQuestion.question)
         answerOptions.push(
-            <h2>{quizQuestion}</h2>
+            <h3 className="quiz-question">{quizQuestion}</h3>
         )
 
         answerArray = currentQuestion.incorrect_answers
@@ -44,7 +44,7 @@ function QuestionForm ({ data, setFormDefaultState, defaultFormState }) {
         // and displayed, not pulled individually
         for (let i = 0; i < answerArray.length; i++) {
             answerOptions.push(
-                <div key={i}>
+                <div key={i} className="question-choices">
                     <input type="radio" id={i} name="answer_option" value={answerArray[i]} onChange={handleAnswer} checked={answer === answerArray[i]} />
                     <label htmlFor={i}>{convertEntities(answerArray[i])}</label>
                 </div>
@@ -107,14 +107,11 @@ function QuestionForm ({ data, setFormDefaultState, defaultFormState }) {
         <>
             { !gameOver &&
                 <div>
-                <br />
-                <h3> *********** </h3>
-                <h3>You selected the {category} category with a {difficulty[0].toUpperCase() + difficulty.slice(1)} level of difficulty</h3>
-                <h3>Good Luck {firstName}!</h3>
-                <h3> *********** </h3>
-
+                    <div className="selection-text">
+                        <h3>You selected the {category} category with a {difficulty[0].toUpperCase() + difficulty.slice(1)} level of difficulty</h3>
+                    </div>
                     <div className="quiz-display">
-                        <div className="multiple-choice">
+                        <div className="question-display">
                             <h2>Question #{questionIndex + 1} of 10</h2>
                             <h2>Your Score: {score}</h2>
                             {renderQuestion(triviaData[questionIndex])}
@@ -131,11 +128,13 @@ function QuestionForm ({ data, setFormDefaultState, defaultFormState }) {
             }
             { gameOver && 
                 <div className="quiz-end-display">
-                    <h3>End of Game</h3>
-                    <h2>{firstName}, your final score was {score}</h2>
+                    <h3>Game Over!</h3>
+                    <h2>{firstName}, Your Final Score Is {score}</h2>
                     <h3>Thank you for playing!</h3>
-                    <h4>Get a new set of questions by clicking the Reset button</h4>
-                    <button onClick={() => setFormDefaultState(defaultFormState)}>Reset the Game</button>
+                    <div className="reset-section">
+                        <h4>Get a new set of questions by clicking the Reset button</h4>
+                        <button id="reset-button" onClick={() => setFormDefaultState(defaultFormState)}>Reset the Game</button>
+                    </div>
                 </div>
             }
         </>

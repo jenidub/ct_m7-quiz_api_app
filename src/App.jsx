@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import QuestionForm from './components/QuestionForm';
 import './App.css';
+import { GiWeightLiftingUp } from "react-icons/gi";
+import { GiMaterialsScience } from "react-icons/gi";
+
 
 // CONSTANTS
 const TRIVIA_CATEGORY_MAP = {
@@ -109,9 +112,11 @@ function App() {
       {/* Welcome message | Title of the Page | Instructions */}
       {/* => Figure out a way to give the user instructions so they know exactly what to do */}
       <div className='header-section'>
-        <h1>The Ultimate Trivia App</h1>
-        <h3>Powered by the <a href="https://opentdb.com/">Open Trivia Database API</a></h3>
-        <p className='header-toggle'>
+        <h1 className='londrina-shadow-regular'>
+          <span className='header-icon'><GiMaterialsScience /></span>The Ultimate Trivia App<span className='header-icon'><GiMaterialsScience /></span>
+        </h1>
+        <h2>Powered by the <a href="https://opentdb.com/">Open Trivia Database API</a></h2>
+        <p className='header-toggle header-welcome'>
           Welcome! We have 100s of questions ready for you to answer. To accept the challenge, 
           enter your first name, select a category of questions, and a level of difficulty. 
           Every question you get correct has a point value assigned. Try to max out your score 
@@ -120,7 +125,7 @@ function App() {
       </div>
 
       {/* Form Section */}
-      <div>
+      <div className='form-section'>
         <form className='form-toggle'>
           {/* // A text box and label for the user's first name */}
           <div>
@@ -174,7 +179,7 @@ function App() {
       <div>
         <hr />
         <footer>
-          <p>Created by the JeniDub Dream Team</p>
+          <p>Created by the JeniDub Dream Team<span className='footer-icon'><GiWeightLiftingUp /></span></p>
         </footer>
       </div>
 
