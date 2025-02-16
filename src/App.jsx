@@ -27,6 +27,7 @@ function App() {
   const resetForm = () => {
       setFormData(DEFAULT_FORM_STATE)
       document.querySelector(".form-toggle").style.display = "block";
+      document.querySelector(".header-toggle").style.display = "block";
   }
 
   // API RELATED FUNCTIONS
@@ -45,6 +46,7 @@ function App() {
       }))
       
       document.querySelector(".form-toggle").style.display = "none";
+      document.querySelector(".header-toggle").style.display = "none";
     } catch (e) {
       console.log("error code: ", e);
     }
@@ -106,21 +108,28 @@ function App() {
     <>
       {/* Welcome message | Title of the Page | Instructions */}
       {/* => Figure out a way to give the user instructions so they know exactly what to do */}
-      <h1>The Ultimate Trivia Quiz App</h1>
-      <h2>Brought to you by the JeniDub Team</h2>
-      <p>Powered by the <a href="https://opentdb.com/">Open Trivia Database API</a></p>
+      <div className='header-section'>
+        <h1>The Ultimate Trivia App</h1>
+        <h3>Powered by the <a href="https://opentdb.com/">Open Trivia Database API</a></h3>
+        <p className='header-toggle'>
+          Welcome! We have 100s of questions ready for you to answer. To accept the challenge, 
+          enter your first name, select a category of questions, and a level of difficulty. 
+          Every question you get correct has a point value assigned. Try to max out your score 
+          - Best of luck!
+        </p>
+      </div>
 
       {/* Form Section */}
       <div>
         <form className='form-toggle'>
           {/* // A text box and label for the user's first name */}
           <div>
-            <label htmlFor="firstName">Welcome! What&apos;s your name? </label>
+            <label htmlFor="firstName">What&apos;s your name? </label>
             <input type="text" id="firstName" placeholder="* Required" value={formData.firstName} onChange={handleNameEntry}></input>
           </div>
 
           {/* A dropdown and label for the question category - the user must have at least 4 choices that the API supports */}
-          <div>
+          <div className="form-element">
             <label htmlFor="category">What question category would you like to see?</label>
             <select id="category" name="category" value={formData.category} onChange={handleCategory}>
               <option value="">Select an option</option>
@@ -133,7 +142,7 @@ function App() {
           </div>
 
           {/* A dropdown and label for the question difficulty - use all three choices the API supports */}
-          <div>
+          <div className="form-element">
             <label htmlFor="difficulty">What level of difficulty would you like?</label>
             <select id="difficulty" name="difficulty" value={formData.difficulty} onChange={handleDifficulty}>
               <option value="">Select an option</option>
@@ -165,7 +174,7 @@ function App() {
       <div>
         <hr />
         <footer>
-          <p>Created by JeniDub</p>
+          <p>Created by the JeniDub Dream Team</p>
         </footer>
       </div>
 
