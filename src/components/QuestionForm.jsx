@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import Results from "./Results";
 
 function QuestionForm (formData) {
+    console.log("formData: ", formData)
     const { firstName, category, difficulty, triviaData } = formData.data;
 
     const [ questionIndex, setQuestionIndex ] = useState(0)
@@ -8,30 +10,28 @@ function QuestionForm (formData) {
     const [ correctAnswer, setCorrectAnswer ] = useState("")
     const [ correct, setCorrect ] = useState(false)
     const [ incorrect, setIncorrect ] = useState(false)
+    const [ score, setScore ] = useState(0)
+    const [ gameOver, setGameOver ] = useState(false)
 
     //USE EFFECT to prevent too many re-renders
     useEffect(() => {
-        if (answer || correctAnswer) {
-            setAnswer(setAnswer)
-            setCorrectAnswer(correctAnswer)
-        } else if (questionIndex) {
-            // setAnswer("")
-            // setCorrectAnswer("")
-            // setCorrect(false)
-            // setIncorrect(false)
-            setQuestionIndex(questionIndex)
-        }
-    }, [answer, correctAnswer, questionIndex]);
+        setGameOver(false)
+        // resetState()
+    }, [gameOver])
 
     // RENDER QUIZ ITEM COMPONENT
     const renderQuestion = (currentQuestion) => {
-        console.log("currentQuestion: ", currentQuestion)
+        console.log("index/questionObject", questionIndex, currentQuestion)
+        if (!currentQuestion) {
+            setGameOver(true)
+            resetState()
+            return 
+        }
+
         let answerOptions = []
         let answerArray = []
 
-        // console.log("question pre-replace: ", currentQuestion.question)
         let quizQuestion = convertEntities(currentQuestion.question)
-        // console.log("question after replace: ", quizQuestion)
         answerOptions.push(
             <h2>{quizQuestion}</h2>
         )
@@ -61,6 +61,7 @@ function QuestionForm (formData) {
     const handleSubmit = (e) => {
         e.preventDefault()
         if (answer === correctAnswer) {
+            setScore(score + (Math.round(Math.random() * 10) * 100))
             setCorrect(true)
         } else {
             setIncorrect(true)
@@ -73,6 +74,16 @@ function QuestionForm (formData) {
         setCorrectAnswer("")
         setCorrect(false)
         setIncorrect(false)
+    }
+
+    const resetState = () => {
+        setQuestionIndex(0)
+        setAnswer("")
+        setCorrectAnswer("")
+        setCorrect(false)
+        setIncorrect(false)
+        document.querySelector(".form-toggle").style.display = "block";
+        document.querySelector(".quiz-display").style.display = "none";
     }
 
     // HELPER FUNCTIONS
@@ -93,29 +104,40 @@ function QuestionForm (formData) {
     
     // COMPONENT RENDERING
     return (
-        <div>
-            <br />
-            <h3> *********** </h3>
-            <h3>You selected the {category} category with a {difficulty[0].toUpperCase() + difficulty.slice(1)} level of difficulty</h3>
-            <h3>Good Luck {firstName}!</h3>
-            <h3> *********** </h3>
-            <div>
-                <div className="multiple-choice">
-                    <h2>Question #{questionIndex + 1} of 10</h2>
-                    {renderQuestion(triviaData[questionIndex])}
-                </div>
+        <>
+            { !gameOver &&
                 <div>
-                    {(!correct && !incorrect) && <button type="submit" onClick={handleSubmit}>Submit Answer</button>}
-                    {(correct || incorrect) && 
-                        <button type="submit" onClick={getNextQuestion}>Next Question</button>
-                    }
+                <br />
+                <h3> *********** </h3>
+                <h3>You selected the {category} category with a {difficulty[0].toUpperCase() + difficulty.slice(1)} level of difficulty</h3>
+                <h3>Good Luck {firstName}!</h3>
+                <h3> *********** </h3>
+
+                    <div className="quiz-display">
+                        <div className="multiple-choice">
+                            <h2>Question #{questionIndex + 1} of 10</h2>
+                            <h2>Your Score: {score}</h2>
+                            {renderQuestion(triviaData[questionIndex])}
+                        </div>
+                        <Results
+                            correct={correct}
+                            incorrect={incorrect}
+                            correctAnswer={correctAnswer}
+                            handleSubmit={handleSubmit}
+                            getNext={getNextQuestion}
+                        />
+                    </div>
                 </div>
-                <div>
-                    {correct && <h3 style={{color: "green"}}>You got the answer correct! Nice job</h3>}
-                    {incorrect && <h3 style={{color: "red"}}>Sorry you got the answer wrong! The correct answer is {correctAnswer}.</h3>}
+            }
+            { gameOver && 
+                <div className="quiz-end-display">
+                    <h3>End of Game</h3>
+                    <h2>{firstName}, your final score was {score}</h2>
+                    <h3>Thank you for playing!</h3>
+                    <h4>Get a new set of questions by submitting the form again</h4>
                 </div>
-            </div>
-        </div>
+            }
+        </>
     )
 }
 

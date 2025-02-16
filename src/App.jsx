@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import QuestionForm from './components/QuestionForm';
-import Results from './components/Results';
 import './App.css';
 
 // CONSTANTS
@@ -16,7 +15,7 @@ const DEFAULT_API_URL = "https://opentdb.com/api.php?amount=10&type=multiple"
 
 function App() {
   // STATE VARIABLES and METHODS
-  const [formData, setFormData] = useState({
+  const [ formData, setFormData ] = useState({
     firstName: "",
     category: "",
     difficulty: "",
@@ -33,10 +32,12 @@ function App() {
       }
 
       const triviaDataResults = await response.json();
-      setFormData(prevFormData => ({
-        ...prevFormData,
+      setFormData(prevData => ({
+        ...prevData,
         triviaData: triviaDataResults.results,
       }))
+      
+      document.querySelector(".form-toggle").style.display = "none";
     } catch (e) {
       console.log("error code: ", e);
     }
@@ -67,13 +68,17 @@ function App() {
   // SUBMIT FORM FUNCTIONS
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await getApiData(formData)
+    if (document.querySelector(".quiz-end-display")) {
+      document.querySelector(".quiz-end-display").style.display = "none";
+    }
 
     // Form Validation
     if (!validateForm()) {
       alert("Please make sure you fill out all fields below")
       return; // If validation fails, exit
     }
+
+    await getApiData(formData)
   }
 
   const validateForm = () => {
@@ -100,7 +105,7 @@ function App() {
 
       {/* Form Section */}
       <div>
-        <form>
+        <form className='form-toggle'>
           {/* // A text box and label for the user's first name */}
           <div>
             <label htmlFor="firstName">Welcome! What&apos;s your name? </label>
@@ -110,7 +115,7 @@ function App() {
           {/* A dropdown and label for the question category - the user must have at least 4 choices that the API supports */}
           <div>
             <label htmlFor="category">What question category would you like to see?</label>
-            <select id="category" name="category" onChange={handleCategory}>
+            <select id="category" name="category" value={formData.category} onChange={handleCategory}>
               <option value="">Select an option</option>
               <option value="General">General</option>
               <option value="Television">TV</option>
@@ -123,7 +128,7 @@ function App() {
           {/* A dropdown and label for the question difficulty - use all three choices the API supports */}
           <div>
             <label htmlFor="difficulty">What level of difficulty would you like?</label>
-            <select id="difficulty" name="difficulty" onChange={handleDifficulty}>
+            <select id="difficulty" name="difficulty" value={formData.difficulty} onChange={handleDifficulty}>
               <option value="">Select an option</option>
               <option value="easy">Easy</option>
               <option value="medium">Medium</option>
@@ -137,22 +142,21 @@ function App() {
           */}
           <button type="submit" onClick={handleSubmit}>Submit Request</button>
         </form>
-
-        {(formData.firstName && formData.triviaData.length > 0) && <QuestionForm data={formData} />}
-        {/* {formData.results && <Results data={formData} />} */}
       </div>
+
+      <div>
+        {formData.triviaData.length > 0 && <QuestionForm data={formData} />}
+      </div>
+
       <div>
         <hr />
         <footer>
           <p>Created by JeniDub</p>
         </footer>
       </div>
+      
     </>
   )
 }
 
 export default App
-
-// HOME PAGE COMPONENT
-// *** NOTE: The input in the text box and dropdowns must be stored in 
-// a state object, NOT in three separate state variables ***
