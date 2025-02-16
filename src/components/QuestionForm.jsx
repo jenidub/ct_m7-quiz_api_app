@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import PropTypes from "prop-types";
 import Results from "./Results";
 
-function QuestionForm (formData) {
-    console.log("formData: ", formData)
-    const { firstName, category, difficulty, triviaData } = formData.data;
+function QuestionForm ({ data, setFormDefaultState, defaultFormState }) {
+    const { firstName, category, difficulty, triviaData } = data;
 
     const [ questionIndex, setQuestionIndex ] = useState(0)
     const [ answer, setAnswer ] = useState("")
@@ -13,19 +13,12 @@ function QuestionForm (formData) {
     const [ score, setScore ] = useState(0)
     const [ gameOver, setGameOver ] = useState(false)
 
-    //USE EFFECT to prevent too many re-renders
-    useEffect(() => {
-        setGameOver(false)
-        // resetState()
-    }, [gameOver])
-
     // RENDER QUIZ ITEM COMPONENT
     const renderQuestion = (currentQuestion) => {
-        console.log("index/questionObject", questionIndex, currentQuestion)
         if (!currentQuestion) {
             setGameOver(true)
             resetState()
-            return 
+            return
         }
 
         let answerOptions = []
@@ -38,6 +31,7 @@ function QuestionForm (formData) {
 
         answerArray = currentQuestion.incorrect_answers
         let currentCorrectAnswer = currentQuestion.correct_answer
+
         if (currentCorrectAnswer !== correctAnswer) {
             setCorrectAnswer(currentCorrectAnswer)
         }
@@ -46,6 +40,8 @@ function QuestionForm (formData) {
             answerArray.push(currentCorrectAnswer)
         }
 
+        // The answers as a radio button group with labels - these must be looped through 
+        // and displayed, not pulled individually
         for (let i = 0; i < answerArray.length; i++) {
             answerOptions.push(
                 <div key={i}>
@@ -60,7 +56,13 @@ function QuestionForm (formData) {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        if (answer === correctAnswer) {
+        if (!answer) {
+            // * An error message, stopping the form submit, if an answer isn't chosen.  
+            if (!answer) {
+                alert("Please select an answer to the question")
+                return; // If no answer given, exit
+            }
+        } else if (answer === correctAnswer) {
             setScore(score + (Math.round(Math.random() * 10) * 100))
             setCorrect(true)
         } else {
@@ -82,8 +84,6 @@ function QuestionForm (formData) {
         setCorrectAnswer("")
         setCorrect(false)
         setIncorrect(false)
-        document.querySelector(".form-toggle").style.display = "block";
-        document.querySelector(".quiz-display").style.display = "none";
     }
 
     // HELPER FUNCTIONS
@@ -134,7 +134,8 @@ function QuestionForm (formData) {
                     <h3>End of Game</h3>
                     <h2>{firstName}, your final score was {score}</h2>
                     <h3>Thank you for playing!</h3>
-                    <h4>Get a new set of questions by submitting the form again</h4>
+                    <h4>Get a new set of questions by clicking the Reset button</h4>
+                    <button onClick={() => setFormDefaultState(defaultFormState)}>Reset the Game</button>
                 </div>
             }
         </>
@@ -143,13 +144,8 @@ function QuestionForm (formData) {
 
 export default QuestionForm;
 
-// QUESTION FORM COMPONENT
-// When the user submits the form to get the question, another form should appear with the following:
-// * The question - the type will always be multiple choice
-// * The answers as a radio button group with labels 
-//    => these must be looped through and displayed, not pulled individually
-
-// * A submit button
-// * A conditional render that will show a message if the API call 
-// encounters an error
-// * An error message, stopping the form submit, if an answer isn't chosen.  
+QuestionForm.propTypes = {
+    data: PropTypes.object,
+    setFormDefaultState: PropTypes.func,
+    defaultFormState: PropTypes.string,
+}

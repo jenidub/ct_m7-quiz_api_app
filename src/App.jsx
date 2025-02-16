@@ -13,14 +13,21 @@ const TRIVIA_CATEGORY_MAP = {
 
 const DEFAULT_API_URL = "https://opentdb.com/api.php?amount=10&type=multiple"
 
+const DEFAULT_FORM_STATE = {
+  firstName: "",
+  category: "",
+  difficulty: "",
+  triviaData: [],
+}
+
 function App() {
   // STATE VARIABLES and METHODS
-  const [ formData, setFormData ] = useState({
-    firstName: "",
-    category: "",
-    difficulty: "",
-    triviaData: [],
-  });
+  const [ formData, setFormData ] = useState(DEFAULT_FORM_STATE);
+
+  const resetForm = () => {
+      setFormData(DEFAULT_FORM_STATE)
+      document.querySelector(".form-toggle").style.display = "block";
+  }
 
   // API RELATED FUNCTIONS
   const getApiData = async function() {
@@ -31,10 +38,10 @@ function App() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const triviaDataResults = await response.json();
+      const responseJSON = await response.json();
       setFormData(prevData => ({
         ...prevData,
-        triviaData: triviaDataResults.results,
+        triviaData: responseJSON.results,
       }))
       
       document.querySelector(".form-toggle").style.display = "none";
@@ -109,7 +116,7 @@ function App() {
           {/* // A text box and label for the user's first name */}
           <div>
             <label htmlFor="firstName">Welcome! What&apos;s your name? </label>
-            <input type="text" id="firstName" placeholder="* Required" onChange={handleNameEntry}></input>
+            <input type="text" id="firstName" placeholder="* Required" value={formData.firstName} onChange={handleNameEntry}></input>
           </div>
 
           {/* A dropdown and label for the question category - the user must have at least 4 choices that the API supports */}
@@ -145,7 +152,14 @@ function App() {
       </div>
 
       <div>
-        {formData.triviaData.length > 0 && <QuestionForm data={formData} />}
+        {formData.triviaData.length > 0 && 
+          <QuestionForm data={formData} setFormDefaultState={resetForm} defaultFormState={DEFAULT_FORM_STATE} />
+        }
+      </div>
+
+      {/* A conditional render that will show a message if the API call encounters an error */}
+      <div>
+
       </div>
 
       <div>
@@ -154,7 +168,7 @@ function App() {
           <p>Created by JeniDub</p>
         </footer>
       </div>
-      
+
     </>
   )
 }
